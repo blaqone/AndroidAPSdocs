@@ -15,19 +15,27 @@ In spring 2022, the Dexcom G7 received its CE certificate and was sold at the en
 
 Noteworthy is the fact that the G7 system, compared to the G6, does not smooth the values, neither in the app, nor in the reader. More details about this [here](https://www.dexcom.com/en-us/faqs/why-does-past-cgm-data-look-different-from-past-data-on-receiver-and-follow-app). Consequently, the values have to be smoothed to be able to use them sensibly in AAPS. 
 
-There are **two** possibilities (as of 02/'23).
+Ways of using the G7 sensor
 
-![DexcomG7.md](../images/DexcomG7.png)
+[![g7sensor-flow.png](https://i.postimg.cc/jqyxjpDf/g7sensor-flow.png)](https://postimg.cc/6T5Jj1L6)
 
-## 1.  Patched Dexcom G7 App
+`iOS Loop 3` : Get it [here](https://loopkit.github.io/loopdocs/loop-3/loop-3-overview/)
+
+`Xdrip+ Companion Mode` : Get the latest nightly from [Xdrip+ Github](https://github.com/NightscoutFoundation/xDrip/releases), Source is `Companion App` and search for `Companion Bluetooth`.
+
+`Gambel G7 App` : Download it [here](https://github.com/authorgambel/Gambel_G7)
+
+`BYODAP` : Get it on [reddit](https://www.reddit.com/r/dexcom/comments/y4vixk/oc_build_your_own_dexcom_app_update_now_with_g7/)
+
+## 1.  GAMBEL G7 App
 
 ### Install a new patched (!) G7 app and start the sensor
 
-A patched Dexcom G7 app gives acess to the Dexcom G7 data. This is not the BYODA app as this app can not receive G7 data at the moment.
+A patched Dexcom G7 app called `GAMBEL G7` gives acess to the Dexcom G7 data. This is not the BYODA app as this app can not receive G7 data at the moment.
 
 Uninstall the original Dexcom app if you used it before (A running sensor session can be continued - note the sensor code before removal of the app!)
 
-Download and install the patched.apk [here](https://github.com/authorgambel/g7/releases).
+Download and install the patched.apk [here](https://github.com/authorgambel/Gambel_G7).
 
 Enter sensor code in the patched app.
 
@@ -48,7 +56,7 @@ For the configuration in AAPS
 The smoothing of glucose values can be activated by enabling the "Average smoothing" or "Exponential Smoothing" plugin in the Config Builder. To disable select the "No Smoothing" option.
 "Exponential smoothing" is more aggressive and rewrites the newest Glucose Value but is good in dealing with heavy noise. "Average smoothing" is much like the back smoothing that was in BYODA G6 and only rewrites the past values but not the current value and therefore has a faster response time.
 
-**Exponential Smoothing** **MUST** be enabled for meaningful use of the G7 values.
+Smoothing **MUST** be enabled for meaningful use of the G7 values.
 
 ## 2. Xdrip+ (companion mode) 
 
