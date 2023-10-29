@@ -1,53 +1,27 @@
 # **Freestyle Libre 3**
 
-Freestyle Libre 3 (FSL3) requires a unique setup to receive BG values in to AAPS. The below is one method for achieving this using the separate app Juggluco. This method uses Juggluco to receive raw, 1-minute interval data from the sensor which is then passed to xDrip+ to be smoothed into 5-minute interval data to be passed to AAPS. While it is possible to pass data directly from Juggluco to AAPS at 1-minute intervals, this would likely result in noisy data and additional battery drain.
+There are two possible ways of getting Freestyle Libre 3 (FSL3)  values to AAPS.
+![FL3](https://github.com/openaps/AndroidAPSdocs/assets/37814299/be84579d-16ad-4ea6-8e48-28b695e003cb)
+
+Either way you need the separate app Juggluco (https://www.juggluco.nl/Juggluco/libre3/)
 
 New sensors can be started either with the Libre 3 App or directly in Juggluco. The guide below indicates the process for starting a sensor with the Juggluco app. For more information on directly starting a sensor within the Libre 3 app please refer to “further help” below. If the sensor has been started with a Libreview account logged in, it is also possible to switch between Juggluco and the Libre 3 app as receiver.
 
-Juggluco can also pass data to LibreView for sharing with health care providers when the sensor is started with the Libre 3 app.
+Juggluco can also pass data to Nightscout and LibreView for sharing with health care providers when the sensor is started with the Libre 3 app.
 
 Within xDrip+ the sensor can be calibrated in the range of -40 mg/dl to +20 mg/dl (-2.2 mmol/l to +1.1 mmol/l) to compensate for differences between a manual meter reading and the sensor readings.
 
-### Current limitations
 
-- If you have a rooted system and want to use the Libre 3 app, you need to hide it. You can find instructions here: [Link](https://www.reddit.com/r/Freestylelibre/comments/s22vlr/comment/hw2p4th/?utm_source=share\&utm_medium=web2x\&context=3).
-  (To find out if the smartphone is rooted, there are several apps, one of them is e.g. https://root-checker.org/).
+## Methode 1: 1-minute-readings
+While it is possible to pass data directly from Juggluco to AAPS at 1-minute intervals, this would likely in additional battery drain. 
+When you select a NON-Dexcom BG source, AAPS does not upload blood glucose values to Nightscout. Normally, Xdrip handles this task. However, if you are not using Xdrip, as shown here, Juggluco must upload the values to Nightscout.
 
+### Step 1: Setup Juggluco
+Follow the instructions here ( https://www.juggluco.nl/Juggluco/libre3/ ) to start a FL3 sensor. Make sure you send the glucose calues to Xdrip+: In Juggluco's settings you can configure Juggluco to send its glucose value to other apps. Juggluco can send three types of such broadcasts. 
+The **xDrip local broadcast** was originally used by xDrip and can be used to send glucose values to AAPS.
+Make sure you also enable Nightscout uploading of glucose values: Settings ->Uploader->Enter your Nightscout URL with port and your api_secret. Enable and save!
 
-## Step 1: Setup Juggluco
-
-Download and install the Juggluco app from [here](https://www.juggluco.nl/Juggluco/download.html).
-
-Now let's open the app. You will be greeted with this screen below. Just click on the "Without Sensor" button.
-
-![Juggluco welcome screen](../images/libre3/step\_8.jpg)
-
-After that we get a short introduction text. Click on "OK".
-
-![Juggluco installation screen](../images/libre3/step\_9.jpg)
-
-Ok, let's set up Juggluco! The app itself doesn't have the best interface, but it is very useful. To open the settings, click anywhere on the screen in the top left corner. Now you should see the following menu. Select "Settings."
-
-![Juggluco settings menu](../images/libre3/step\_10.jpg)
-
-In the settings you can configure the data connection to xDrip. Click on "Patched Libre Broadcast" and press "OK".
-
-![Juggluco settings](../images/libre3/step\_11.jpg)
-
-Well done!
-
-Necessary settings for a successful sensor start:
-
-- NFC enabled / BT enabled
-- Memory and location permission enabled
-- location service enabled
-- automatic time and time zone setting
-
-Please note that location service is a central setting. It is not the location authorization of the app, which must also be set!
-
-Now start the Libre3 sensor with the Juggluco app by simply scanning the sensor. Make sure that all settings are correct.
-
-## Step 2 (optional): Setup Libreview
+### Optional Step: Setup Libreview
 
 You can use a sensor that was already used with the original Libre3 app if you use the same LibreView account name. Press "Start new sensor" and scan the sensor. If you want to return to the Juggluco app, stop the Libre3 app and scan the sensor with the Juggluco app open.
 
@@ -62,7 +36,22 @@ You can also, for example, share your data with your doctor or print the reports
 4. Tap "Get Account ID" and wait until the Libre-ID gets visible (random number below the password input field)
 5. Done!
 
-## Step 3: Setup xDrip
+### Step 2: Configure AndroidAPS
+
+- In AndroidAPS go to Config Builder -> BG Source and check "xDrip+"
+- If AndroidAPS does not receive BG values when phone is in airplane mode, use "Identify receiver"
+- Turn on Smoothing!
+
+As of now, when using Libre 3 as a BG source, the "Always enable SMB" and "Enable SMB by Carbs" options cannot be enabled in the SMB algorithm. The BG values from Libre 3 are not smooth enough to use safely. 
+
+## Methode 2: 5-minute-readings 
+This method uses Juggluco to receive raw, 1-minute interval data from the sensor which is then passed to xDrip+ to be smoothed into 5-minute interval data to be passed to AAPS. 
+
+### Step 1: Setup Juggluco
+Follow the instructions here ( https://www.juggluco.nl/Juggluco/libre3/ ) to start a FL3 sensor. Make sure you send the glucose calues to Xdrip+: In Juggluco's settings you can configure Juggluco to send its glucose value to other apps. Juggluco can send three types of such broadcasts. 
+The **Librelink broadcast** was originally used by the patched Librelink app and can be used to send glucose values to xDrip+
+
+### Step 2: Setup xDrip
 
 The blood glucose values are received by the xDrip+ app on the smartphone.
 
@@ -75,7 +64,7 @@ The blood glucose values are received by the xDrip+ app on the smartphone.
 - To allow AAPS to receive blood glucose values (from version 2.5.x) from xDrip+, please enable Settings -> Interapp Settings -> Identify Receiver "info.nightscout.androidaps".
 - If you want to use AndroidAPS for calibration, go to Settings -> Interapp compatibility -> Accept calibrations in xDrip+ and select ON. It's also best to check the options under Settings -> Less General Settings -> Check Advanced Calibration Settings.
 
-## Step 4: Start sensor within xDrip
+### Step 3: Start sensor within xDrip
 
 In xDrip+ start the sensor with "Start Sensor" and "not today". It is not necessary to hold the mobile phone onto the sensor. In fact "Start Sensor" will not physically start any Libre 3 sensor or interact with them in any case. This is simply to indicate xDrip+ that a new sensor is delivering blood sugar levels. If available, enter two bloody measured values for the initial calibration. Now the blood glucose values should be displayed in xDrip+ every 5 minutes. Skipped values, e.g. because you were too far away from your phone, will not be backfilled.
 
@@ -83,12 +72,14 @@ Wait at least 15-20 minutes if there is still no data.
 
 After a sensor change xDrip+ will automatically detect the new sensor and will delete all calibration data. You may check you bloody BG after activation and make a new initial calibration.
 
-## Step 5: Configure AndroidAPS
+### Step 4: Configure AndroidAPS
 
 - In AndroidAPS go to Config Builder -> BG Source and check "xDrip+"
 - If AndroidAPS does not receive BG values when phone is in airplane mode, use "Identify receiver"
+- Turn of Smoothing (done in Xdrip+ already)
 
 As of now, when using Libre 3 as a BG source, the "Always enable SMB" and "Enable SMB by Carbs" options cannot be enabled in the SMB algorithm. The BG values from Libre 3 are not smooth enough to use safely.
+
 
 ## Subsequent sensor changes
 
